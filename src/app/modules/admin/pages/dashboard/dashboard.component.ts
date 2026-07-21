@@ -2,18 +2,25 @@ import { Component, OnInit } from '@angular/core';
 
 import { AuthService } from 'src/app/modules/auth/services/auth.service';
 import { Order } from 'src/app/modules/orders/models/order';
+import { DashboardStats } from '../../models/dashboard-stats';
 import { MonthlySalesSummary } from '../../models/monthly-sales-summary';
 import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
   orders: Order[] = [];
 
   totalOrders = 0;
+
+  stats: DashboardStats = {
+    totalOrders: 0,
+    pendingOrders: 0,
+    completedOrders: 0,
+  };
 
   salesSummary: MonthlySalesSummary[] = [];
 
@@ -29,6 +36,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadOrders();
     this.loadSalesSummary();
+    this.loadDashboardStats();
   }
 
   loadOrders(): void {
@@ -48,7 +56,7 @@ export class DashboardComponent implements OnInit {
       },
       error: () => {
         this.isLoadingOrders = false;
-          this.authService.showMessage('Unable to load admin orders.');
+        this.authService.showMessage('Unable to load admin orders.');
       },
     });
   }
@@ -78,19 +86,26 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  loadDashboardStats(): void {
+    this.adminService.getDashboardStats().subscribe({
+      next: (response) => {
+        if (response.statusCode !== 200 || !response.data) {
+          this.authService.showMessage(response.message);
+          return;
+        }
+
+        this.stats = response.data;
+      },
+      error: () => {
+        this.authService.showMessage('Unable to load dashboard stats.');
+      },
+    });
+  }
+
   totalSales(): number {
     return this.salesSummary.reduce(
       (total, month) => total + month.totalSales,
       0,
     );
   }
-
-  pendingOrders(): number {
-    return this.orders.filter((order) => order.status === 'Pending').length;
-  }
-
-  completedOrders(): number {
-    return this.orders.filter((order) => order.status === 'Completed').length;
-  }
-
 }

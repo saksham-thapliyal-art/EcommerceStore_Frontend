@@ -7,6 +7,7 @@ import { Order } from 'src/app/modules/orders/models/order';
 import { PagedResponse } from 'src/app/shared/models/paged-response';
 import { environment } from 'src/environments/environment';
 import { MonthlySalesSummary } from '../models/monthly-sales-summary';
+import { DashboardStats } from '../models/dashboard-stats';
 import { SalesByCategory } from '../models/sales-by-category';
 import { UpdateOrderStatusRequest } from '../models/update-order-status-request';
 
@@ -74,6 +75,12 @@ export class AdminService {
   getSalesByCategory(): Observable<ApiResponse<SalesByCategory[]>> {
     return this.http.get<ApiResponse<SalesByCategory[]>>(
       `${this.apiUrl}/GetSalesByCategory`,
+    );
+  }
+
+  getDashboardStats(): Observable<ApiResponse<DashboardStats>> {
+    return this.http.get<ApiResponse<DashboardStats>>(
+      `${this.apiUrl}/GetDashboardStats`,
     );
   }
 }

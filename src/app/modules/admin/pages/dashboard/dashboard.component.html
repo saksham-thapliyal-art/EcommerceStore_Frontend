@@ -4,7 +4,12 @@
       <h1>Admin Dashboard</h1>
       <p>Monitor orders, update fulfillment, and review completed sales.</p>
     </div>
-    <button mat-stroked-button color="primary" type="button" (click)="loadOrders()">
+    <button
+      mat-stroked-button
+      color="primary"
+      type="button"
+      (click)="loadOrders(); loadDashboardStats()"
+    >
       <mat-icon>refresh</mat-icon>
       Refresh
     </button>
@@ -19,12 +24,12 @@
     <div class="metric">
       <mat-icon>pending_actions</mat-icon>
       <span>Pending</span>
-      <strong>{{ pendingOrders() }}</strong>
+      <strong>{{ stats.pendingOrders }}</strong>
     </div>
     <div class="metric">
       <mat-icon>verified</mat-icon>
       <span>Completed Orders</span>
-      <strong>{{ completedOrders() }}</strong>
+      <strong>{{ stats.completedOrders }}</strong>
     </div>
     <div class="metric">
       <mat-icon>payments</mat-icon>
