@@ -1,0 +1,94 @@
+.footer {
+  background: #0f172a;
+  color: #94a3b8;
+  margin-top: 60px;
+  padding: 36px 0 20px;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-brand {
+  h2 {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}
+
+.social-links {
+  display: flex;
+  gap: 14px;
+
+  a {
+    color: #94a3b8;
+    transition: color 0.2s ease;
+
+    i {
+      font-size: 18px;
+    }
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 18px;
+
+  p {
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+.payment-icons {
+  display: flex;
+  gap: 12px;
+
+  i {
+    font-size: 20px;
+  }
+}

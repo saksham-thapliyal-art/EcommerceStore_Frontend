@@ -1,0 +1,122 @@
+<section class="home-page">
+  <div class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Summer Sale</span>
+      <h1>Up to 50% Off</h1>
+      <p>Shop phones, laptops, audio, and everyday essentials with fast checkout and live cart updates.</p>
+      <div class="hero-actions">
+        <a mat-raised-button color="primary" routerLink="/products">
+          <mat-icon>shopping_bag</mat-icon>
+          Shop Now
+        </a>
+        <a mat-stroked-button routerLink="/orders">
+          <mat-icon>receipt_long</mat-icon>
+          My Orders
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="showcase-card primary-product" *ngIf="featuredProducts[0] as product">
+        <img [src]="imageUrl(product)" [alt]="product.name" />
+        <strong>{{ product.name }}</strong>
+        <span>{{ product.price | currency: 'INR' }}</span>
+      </div>
+      <div class="showcase-card secondary-product" *ngIf="featuredProducts[1] as product">
+        <img [src]="imageUrl(product)" [alt]="product.name" />
+        <strong>{{ product.name }}</strong>
+      </div>
+      <div class="showcase-card tertiary-product" *ngIf="featuredProducts[2] as product">
+        <img [src]="imageUrl(product)" [alt]="product.name" />
+      </div>
+      <div class="deal-badge">50%<span>OFF</span></div>
+    </div>
+  </div>
+
+  <div class="promise-row">
+    <div class="promise" *ngFor="let item of promises">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <div>
+        <strong>{{ item.label }}</strong>
+        <span>{{ item.detail }}</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">Featured Products</span>
+        <h2>Popular picks for today</h2>
+      </div>
+      <a mat-button routerLink="/products">
+        View All
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+    <div class="product-grid" *ngIf="featuredProducts.length; else emptyProducts">
+      <article
+        class="product-card"
+        *ngFor="let product of featuredProducts; trackBy: trackByProductId"
+      >
+        <a [routerLink]="['/products', product.productId]" class="product-image">
+          <img [src]="imageUrl(product)" [alt]="product.name" />
+          <span>{{ product.categoryName }}</span>
+        </a>
+
+        <div class="product-info">
+          <h3>
+            <a [routerLink]="['/products', product.productId]">{{ product.name }}</a>
+          </h3>
+          <p>{{ product.description || 'Premium product ready to ship.' }}</p>
+        </div>
+
+        <div class="product-meta">
+          <strong>{{ product.price | currency: 'INR' }}</strong>
+          <span [class.low]="product.stockQuantity <= 5">{{ product.stockQuantity }} left</span>
+        </div>
+
+        <button
+          mat-icon-button
+          type="button"
+          matTooltip="Add to cart"
+          [disabled]="product.stockQuantity <= 0 || addingProductId === product.productId"
+          (click)="addToCart(product)"
+        >
+          <mat-icon>add_shopping_cart</mat-icon>
+        </button>
+      </article>
+    </div>
+
+    <ng-template #emptyProducts>
+      <div class="empty-state" *ngIf="!isLoading">
+        <mat-icon>inventory_2</mat-icon>
+        <h3>No featured products yet</h3>
+        <p>Add products from the admin dashboard to populate this section.</p>
+      </div>
+    </ng-template>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">Top Categories</span>
+        <h2>Shop by department</h2>
+      </div>
+    </div>
+
+    <div class="category-grid">
+      <a
+        class="category-card"
+        *ngFor="let category of categories"
+        [routerLink]="category.route"
+      >
+        <mat-icon>{{ category.icon }}</mat-icon>
+        <span>{{ category.name }}</span>
+      </a>
+    </div>
+  </section>
+</section>

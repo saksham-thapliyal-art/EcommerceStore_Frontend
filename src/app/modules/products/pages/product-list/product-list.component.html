@@ -1,0 +1,149 @@
+<section class="products-page">
+  <div class="products-header">
+    <div>
+      <span>Catalog</span>
+      <h1>Mobiles, laptops, fashion and essentials</h1>
+      <p>Browse active products, refine the selection, and add favorites to your cart.</p>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <mat-form-field appearance="outline">
+      <mat-label>Search products</mat-label>
+      <input
+        #searchInput
+        matInput
+        type="search"
+        placeholder="Search by name or description"
+        (keyup.enter)="search(searchInput.value)"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        aria-label="Search"
+        (click)="search(searchInput.value)"
+      >
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sort</mat-label>
+      <mat-select [(ngModel)]="selectedSort" (selectionChange)="changeSort()">
+        <mat-option *ngFor="let option of sortOptions" [value]="option">
+          {{ option.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="catalog-shell">
+    <aside class="filters-panel">
+      <div class="filter-heading">
+        <h2>Filters</h2>
+        <button mat-button type="button" (click)="clearFilters(searchInput)">
+          Clear
+        </button>
+      </div>
+
+      <section>
+        <h3>Categories</h3>
+        <button
+          mat-button
+          type="button"
+          class="filter-option"
+          *ngFor="let category of categories"
+          [class.child-category]="category.depth > 0"
+          [class.selected]="selectedCategoryId === category.value"
+          (click)="applyCategory(category.value)"
+        >
+          <mat-icon>{{ selectedCategoryId === category.value ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+          {{ category.label }}
+        </button>
+      </section>
+
+      <section>
+        <h3>Price</h3>
+        <mat-form-field appearance="outline">
+          <mat-label>Price range</mat-label>
+          <mat-select [(ngModel)]="selectedPriceRange" (selectionChange)="applyPriceRange()">
+            <mat-option *ngFor="let range of priceRanges" [value]="range">
+              {{ range.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </section>
+    </aside>
+
+    <div class="catalog-results">
+      <div class="results-bar">
+        <strong>{{ totalRows }} products</strong>
+        <span>Fresh picks with live stock and fast checkout.</span>
+      </div>
+
+      <div *ngIf="products.length; else emptyProducts" class="product-grid">
+        <article
+          class="product-card"
+          *ngFor="let product of products; trackBy: trackByProductId"
+        >
+          <a [routerLink]="['/products', product.productId]" class="image-link">
+            <img [src]="imageUrl(product)" [alt]="product.name" />
+            <button mat-icon-button type="button" aria-label="View product" tabindex="-1">
+              <mat-icon>favorite_border</mat-icon>
+            </button>
+          </a>
+
+          <div class="product-body">
+            <span class="category">{{ product.categoryName }}</span>
+            <h2>
+              <a [routerLink]="['/products', product.productId]">
+                {{ product.name }}
+              </a>
+            </h2>
+            <p>{{ product.description || 'No description available.' }}</p>
+          </div>
+
+          <div class="product-footer">
+            <strong>{{ product.price | currency: 'INR' }}</strong>
+            <span
+              class="stock"
+              [class.low-stock]="product.stockQuantity <= 5"
+            >
+              {{ product.stockQuantity }} left
+            </span>
+          </div>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            [disabled]="product.stockQuantity <= 0 || addingProductId === product.productId"
+            (click)="addToCart(product)"
+          >
+            <mat-icon>add_shopping_cart</mat-icon>
+            Add to Cart
+          </button>
+        </article>
+      </div>
+
+      <mat-paginator
+        [length]="totalRows"
+        [pageIndex]="filter.pageIndex || 0"
+        [pageSize]="filter.pageSize || 8"
+        [pageSizeOptions]="[4, 8, 12, 24]"
+        (page)="pageChanged($event)"
+      ></mat-paginator>
+    </div>
+  </div>
+
+  <ng-template #emptyProducts>
+    <div class="empty-products" *ngIf="!isLoading">
+      <mat-icon>inventory_2</mat-icon>
+      <h2>No products found</h2>
+      <p>Try a different search term or sorting option.</p>
+    </div>
+  </ng-template>
+</section>

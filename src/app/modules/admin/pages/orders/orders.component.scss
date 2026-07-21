@@ -1,0 +1,141 @@
+.admin-page {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.page-header,
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-header {
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  h1 {
+    color: #102033;
+    font-size: 32px;
+    margin: 0 0 6px;
+  }
+
+  p {
+    color: #64748b;
+    margin: 0;
+  }
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) repeat(2, minmax(160px, 220px));
+  margin-bottom: 18px;
+}
+
+.table-panel,
+.empty-state {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.page-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  color: #475569;
+  background: rgba(248, 250, 252, 0.72);
+  font-weight: 700;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+th.mat-mdc-header-cell {
+  color: #475569;
+  font-weight: 800;
+  background: #f8fafc;
+}
+
+tr.mat-mdc-row:hover {
+  background: #f8fafc;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 4px 10px;
+  color: #075985;
+  background: #e0f2fe;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status.completed {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status.processing {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status.cancelled {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.status-field {
+  width: 160px;
+  margin-top: 18px;
+}
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-height: 280px;
+  padding: 44px 20px;
+  text-align: center;
+
+  mat-icon {
+    width: 54px;
+    height: 54px;
+    color: #2563eb;
+    font-size: 54px;
+  }
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  p {
+    color: #64748b;
+  }
+}
+
+@media (max-width: 760px) {
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}

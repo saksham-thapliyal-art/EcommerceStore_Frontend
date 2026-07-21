@@ -1,0 +1,68 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 64px;
+  padding: 0 clamp(16px, 4vw, 48px);
+  background: #ffffff;
+  color: #102033;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f766e;
+  font-size: 20px;
+  font-weight: 800;
+
+  mat-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 28px;
+  }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 28px;
+
+  a {
+    color: #475569;
+    font-weight: 600;
+  }
+
+  .active {
+    color: #0f766e;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.account-name {
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .navbar {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .account-name {
+    display: none;
+  }
+}

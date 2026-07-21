@@ -1,0 +1,145 @@
+<section class="admin-page">
+  <header class="page-header">
+    <div>
+      <h1>Categories</h1>
+      <p>Create and organize product categories.</p>
+    </div>
+    <button mat-raised-button color="primary" type="button" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Add Category
+    </button>
+  </header>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="category-sections" *ngIf="categories.length; else emptyCategories">
+    <section
+      class="category-section"
+      *ngFor="let parent of parentCategories(); trackBy: trackByCategoryId"
+    >
+      <div class="section-heading">
+        <h2>{{ parent.name }}</h2>
+        <span>{{ categoryItemCount(parent) }} items</span>
+      </div>
+
+      <div class="category-grid">
+        <article class="category-card parent-card">
+          <button
+            mat-icon-button
+            type="button"
+            class="card-action edit"
+            matTooltip="Edit category"
+            (click)="openEditDialog(parent)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            color="warn"
+            class="card-action delete"
+            matTooltip="Delete category"
+            (click)="deleteCategory(parent)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <div class="icon-tile">
+            <mat-icon>{{ categoryIcon(parent) }}</mat-icon>
+          </div>
+          <h3>{{ parent.name }}</h3>
+          <p>{{ categoryItemCount(parent) }} items</p>
+          <span class="badge">Parent</span>
+        </article>
+
+        <article
+          class="category-card child-card"
+          *ngFor="let child of childCategories(parent.categoryId); trackBy: trackByCategoryId"
+        >
+          <button
+            mat-icon-button
+            type="button"
+            class="card-action edit"
+            matTooltip="Edit category"
+            (click)="openEditDialog(child)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            color="warn"
+            class="card-action delete"
+            matTooltip="Delete category"
+            (click)="deleteCategory(child)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <div class="icon-tile">
+            <mat-icon>{{ categoryIcon(child) }}</mat-icon>
+          </div>
+          <h3>{{ child.name }}</h3>
+          <p>{{ categoryItemCount(child) }} items</p>
+          <span class="badge">Under {{ parent.name }}</span>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <ng-template #emptyCategories>
+    <div class="empty-state" *ngIf="!isLoading">
+      <mat-icon>category</mat-icon>
+      <h2>No categories yet</h2>
+      <p>Add a category to start organizing products.</p>
+    </div>
+  </ng-template>
+
+  <ng-template #categoryDialog>
+    <form class="dialog-form" [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+      <header class="dialog-header">
+        <div>
+          <h2>{{ editingCategoryId ? 'Edit Category' : 'Add Category' }}</h2>
+          <p>Organize storefront departments and child categories.</p>
+        </div>
+        <button mat-icon-button type="button" mat-dialog-close>
+          <mat-icon>close</mat-icon>
+        </button>
+      </header>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+        <mat-error *ngIf="categoryForm.get('name')?.hasError('required')">
+          Name is required.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="4" formControlName="description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Parent category</mat-label>
+        <mat-select formControlName="parentCategoryId">
+          <mat-option [value]="null">None</mat-option>
+          <mat-option
+            *ngFor="let category of categories"
+            [value]="category.categoryId"
+            [disabled]="category.categoryId === editingCategoryId"
+          >
+            {{ category.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit">
+          {{ editingCategoryId ? 'Update Category' : 'Create Category' }}
+        </button>
+        <button mat-button type="button" mat-dialog-close>Cancel</button>
+      </div>
+    </form>
+  </ng-template>
+</section>

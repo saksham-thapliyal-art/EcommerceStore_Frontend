@@ -1,0 +1,66 @@
+<mat-toolbar class="navbar">
+  <a class="brand" routerLink="/">
+    <mat-icon>storefront</mat-icon>
+    <span>ShopHub</span>
+  </a>
+
+  <nav class="nav-links" aria-label="Primary navigation">
+    <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      Home
+    </a>
+    <a mat-button routerLink="/products" routerLinkActive="active">
+      Products
+    </a>
+    <a *ngIf="authService.isLoggedIn()" mat-button routerLink="/orders" routerLinkActive="active">
+      Orders
+    </a>
+  </nav>
+
+  <span class="spacer"></span>
+
+  <a
+    *ngIf="authService.isLoggedIn()"
+    mat-icon-button
+    routerLink="/cart"
+    aria-label="Open cart"
+    matTooltip="Cart"
+  >
+    <mat-icon
+      [matBadge]="itemCount$ | async"
+      [matBadgeHidden]="(itemCount$ | async) === 0"
+      matBadgeColor="accent"
+      matBadgeSize="small"
+    >
+      shopping_cart
+    </mat-icon>
+  </a>
+
+  <button
+    *ngIf="authService.isLoggedIn()"
+    mat-button
+    type="button"
+    [matMenuTriggerFor]="accountMenu"
+  >
+    <mat-icon>account_circle</mat-icon>
+    <span class="account-name">{{ authService.getFullName() || 'Account' }}</span>
+  </button>
+
+  <a *ngIf="!authService.isLoggedIn()" mat-button routerLink="/auth/login">
+    Login
+  </a>
+
+  <mat-menu #accountMenu="matMenu">
+    <a mat-menu-item routerLink="/profile">
+      <mat-icon>person</mat-icon>
+      <span>Profile</span>
+    </a>
+    <a *ngIf="authService.isAdmin()" mat-menu-item routerLink="/admin">
+      <mat-icon>dashboard</mat-icon>
+      <span>Admin</span>
+    </a>
+    <button mat-menu-item type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

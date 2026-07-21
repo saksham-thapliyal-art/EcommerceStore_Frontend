@@ -1,0 +1,188 @@
+.orders-page {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.orders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  h1 {
+    color: #102033;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  p {
+    color: #64748b;
+    margin: 0;
+  }
+}
+
+.success-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.orders-shell {
+  position: relative;
+}
+
+.page-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: start center;
+  padding-top: 64px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.orders-list {
+  display: grid;
+  gap: 16px;
+}
+
+.order-card,
+.empty-orders {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.order-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+
+  header,
+  footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  h2 {
+    color: #102033;
+    font-size: 19px;
+    margin: 0 0 4px;
+  }
+
+  p {
+    color: #64748b;
+    margin: 0;
+  }
+
+  footer {
+    color: #475569;
+
+    strong {
+      color: #0f172a;
+      font-size: 18px;
+    }
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 12px;
+  color: #075985;
+  background: #e0f2fe;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.status.pending {
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.status.processing {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status.completed,
+.status.delivered {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status.cancelled,
+.status.canceled {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.order-items {
+  display: grid;
+  gap: 10px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  color: #475569;
+
+  span {
+    overflow-wrap: anywhere;
+  }
+}
+
+.empty-orders {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  min-height: 340px;
+  padding: 48px 20px;
+  text-align: center;
+
+  mat-icon {
+    width: 56px;
+    height: 56px;
+    color: #0f766e;
+    font-size: 56px;
+  }
+
+  h2 {
+    color: #102033;
+    margin: 0;
+  }
+
+  p {
+    color: #64748b;
+    margin: 0 0 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  .orders-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .order-card header,
+  .order-card footer,
+  .order-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

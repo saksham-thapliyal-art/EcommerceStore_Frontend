@@ -1,0 +1,75 @@
+<section class="orders-page">
+  <div class="orders-header">
+    <div>
+      <h1>Orders</h1>
+      <p>Track recent purchases and review order details.</p>
+    </div>
+    <a mat-stroked-button color="primary" routerLink="/products">
+      <mat-icon>storefront</mat-icon>
+      Shop More
+    </a>
+  </div>
+
+  <div *ngIf="placedOrderId" class="success-banner">
+    <mat-icon>check_circle</mat-icon>
+    <span>Order #{{ placedOrderId }} placed successfully.</span>
+  </div>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="orders-shell">
+    <div class="page-loading" *ngIf="isPageLoading">
+      <mat-spinner diameter="28"></mat-spinner>
+    </div>
+
+    <div *ngIf="orders.length; else emptyOrders" class="orders-list">
+    <article
+      class="order-card"
+      *ngFor="let order of orders; trackBy: trackByOrderId"
+    >
+      <header>
+        <div>
+          <h2>Order #{{ order.orderId }}</h2>
+          <p>{{ order.orderDate | date: 'medium' }}</p>
+        </div>
+        <span class="status" [ngClass]="statusClass(order.status)">
+          {{ order.status }}
+        </span>
+      </header>
+
+      <div class="order-items">
+        <div class="order-item" *ngFor="let item of order.items">
+          <span>{{ item.productName }} x {{ item.quantity }}</span>
+          <strong>{{ item.lineTotal | currency: 'INR' }}</strong>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <footer>
+        <span>{{ order.paymentMethod }}</span>
+        <strong>{{ order.totalAmount | currency: 'INR' }}</strong>
+      </footer>
+    </article>
+    </div>
+
+    <mat-paginator
+      [length]="totalRows"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="pageChanged($event)"
+    ></mat-paginator>
+  </div>
+
+  <ng-template #emptyOrders>
+    <div class="empty-orders" *ngIf="!isLoading">
+      <mat-icon>receipt_long</mat-icon>
+      <h2>No orders yet</h2>
+      <p>Your completed checkouts will appear here.</p>
+      <a mat-raised-button color="primary" routerLink="/products">
+        Browse Products
+      </a>
+    </div>
+  </ng-template>
+</section>

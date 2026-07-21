@@ -1,0 +1,62 @@
+<section class="reports-page">
+  <header class="page-header">
+    <div>
+      <h1>Reports</h1>
+      <p>Track completed sales by month and category.</p>
+    </div>
+    <button mat-stroked-button color="primary" type="button" (click)="loadReports()">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </header>
+
+  <div class="metrics">
+    <div class="metric">
+      <mat-icon>payments</mat-icon>
+      <span>Total Sales</span>
+      <strong>{{ totalSales() | currency: 'INR' }}</strong>
+    </div>
+    <div class="metric">
+      <mat-icon>calendar_month</mat-icon>
+      <span>Months</span>
+      <strong>{{ salesSummary.length }}</strong>
+    </div>
+    <div class="metric">
+      <mat-icon>category</mat-icon>
+      <span>Categories</span>
+      <strong>{{ salesByCategory.length }}</strong>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="chart-grid">
+    <section class="chart-card">
+      <h2>Monthly Trend</h2>
+      <div class="chart-panel" *ngIf="salesSummary.length; else noMonthlySales">
+        <canvas #monthlySalesChart></canvas>
+      </div>
+    </section>
+
+    <section class="chart-card">
+      <h2>Sales by Category</h2>
+      <div class="chart-panel" *ngIf="salesByCategory.length; else noCategorySales">
+        <canvas #categorySalesChart></canvas>
+      </div>
+    </section>
+  </div>
+
+  <ng-template #noMonthlySales>
+    <div class="empty-state">
+      <mat-icon>show_chart</mat-icon>
+      <p>No sales data for this period yet.</p>
+    </div>
+  </ng-template>
+
+  <ng-template #noCategorySales>
+    <div class="empty-state">
+      <mat-icon>donut_large</mat-icon>
+      <p>No category sales data yet.</p>
+    </div>
+  </ng-template>
+</section>

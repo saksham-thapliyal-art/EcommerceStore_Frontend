@@ -1,0 +1,137 @@
+<section class="cart-page">
+  <div class="cart-header">
+    <div>
+      <h1>Shopping Cart</h1>
+      <p>Review items, adjust quantities, and continue to checkout.</p>
+    </div>
+
+    <a mat-stroked-button color="primary" routerLink="/products">
+      <mat-icon>arrow_back</mat-icon>
+      Continue Shopping
+    </a>
+  </div>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <ng-container *ngIf="cart$ | async as cart">
+    <div *ngIf="cart.items.length; else emptyCart" class="cart-grid">
+      <div class="cart-items">
+        <article
+          class="cart-item"
+          *ngFor="let item of cart.items; trackBy: trackByCartItemId"
+        >
+          <img
+            class="item-image"
+            [src]="formatImageUrl(item.imageUrl)"
+            [alt]="item.productName"
+          />
+
+          <div class="item-details">
+            <h2>{{ item.productName }}</h2>
+            <p>{{ item.unitPrice | currency: 'INR' }}</p>
+            <span
+              class="stock-badge"
+              [class.low-stock]="item.stockQuantity <= 5"
+            >
+              {{ item.stockQuantity }} in stock
+            </span>
+          </div>
+
+          <div class="quantity-controls" aria-label="Quantity controls">
+            <button
+              mat-icon-button
+              type="button"
+              aria-label="Decrease quantity"
+              [disabled]="item.quantity <= 1 || updatingItemId === item.cartItemId"
+              (click)="decreaseQuantity(item)"
+            >
+              <mat-icon>remove</mat-icon>
+            </button>
+
+            <span>{{ item.quantity }}</span>
+
+            <button
+              mat-icon-button
+              type="button"
+              aria-label="Increase quantity"
+              [disabled]="
+                item.quantity >= item.stockQuantity ||
+                updatingItemId === item.cartItemId
+              "
+              (click)="increaseQuantity(item)"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+
+          <strong class="line-total">
+            {{ item.lineTotal | currency: 'INR' }}
+          </strong>
+
+          <button
+            mat-icon-button
+            color="warn"
+            type="button"
+            aria-label="Remove item"
+            [disabled]="updatingItemId === item.cartItemId"
+            (click)="removeItem(item)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </article>
+      </div>
+
+      <aside class="cart-summary">
+        <h2>Order Summary</h2>
+
+        <div class="summary-row">
+          <span>Items</span>
+          <strong>{{ cart.totalItems }}</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong>{{ cart.totalAmount | currency: 'INR' }}</strong>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="summary-total">
+          <span>Total</span>
+          <strong>{{ cart.totalAmount | currency: 'INR' }}</strong>
+        </div>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="proceedToCheckout()"
+        >
+          Proceed to Checkout
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+
+        <button
+          mat-button
+          color="warn"
+          type="button"
+          [disabled]="isLoading"
+          (click)="clearCart()"
+        >
+          Clear Cart
+        </button>
+      </aside>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyCart>
+    <div class="empty-cart">
+      <mat-icon>shopping_cart</mat-icon>
+      <h2>Your cart is empty</h2>
+      <p>Add products to your cart and they will appear here.</p>
+      <a mat-raised-button color="primary" routerLink="/products">
+        Browse Products
+      </a>
+    </div>
+  </ng-template>
+</section>

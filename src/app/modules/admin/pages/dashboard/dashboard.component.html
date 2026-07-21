@@ -1,0 +1,88 @@
+<section class="admin-dashboard">
+  <header class="dashboard-header">
+    <div>
+      <h1>Admin Dashboard</h1>
+      <p>Monitor orders, update fulfillment, and review completed sales.</p>
+    </div>
+    <button mat-stroked-button color="primary" type="button" (click)="loadOrders()">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+  </header>
+
+  <div class="metrics">
+    <div class="metric">
+      <mat-icon>receipt_long</mat-icon>
+      <span>Total Orders</span>
+      <strong>{{ totalOrders }}</strong>
+    </div>
+    <div class="metric">
+      <mat-icon>pending_actions</mat-icon>
+      <span>Pending</span>
+      <strong>{{ pendingOrders() }}</strong>
+    </div>
+    <div class="metric">
+      <mat-icon>verified</mat-icon>
+      <span>Completed Orders</span>
+      <strong>{{ completedOrders() }}</strong>
+    </div>
+    <div class="metric">
+      <mat-icon>payments</mat-icon>
+      <span>Completed Sales</span>
+      <strong>{{ totalSales() | currency: 'INR' }}</strong>
+    </div>
+  </div>
+
+  <mat-progress-bar
+    *ngIf="isLoadingOrders || isLoadingSales"
+    mode="indeterminate"
+  ></mat-progress-bar>
+
+  <section class="dashboard-section">
+    <div class="section-title">
+      <h2>Recent Orders</h2>
+      <a mat-button color="primary" routerLink="/admin/orders">
+        Manage Orders
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <div class="order-list" *ngIf="orders.length; else noOrders">
+      <article class="order-card" *ngFor="let order of orders.slice(0, 5)">
+        <div>
+          <strong>#{{ order.orderId }}</strong>
+          <span>{{ order.orderDate | date: 'mediumDate' }}</span>
+        </div>
+        <span class="status" [ngClass]="order.status.toLowerCase()">
+          {{ order.status }}
+        </span>
+        <strong>{{ order.totalAmount | currency: 'INR' }}</strong>
+      </article>
+    </div>
+
+    <ng-template #noOrders>
+      <p class="empty-text">No orders yet.</p>
+    </ng-template>
+  </section>
+
+  <section class="dashboard-section">
+    <div class="section-title">
+      <h2>Monthly Sales Snapshot</h2>
+      <a mat-button color="primary" routerLink="/admin/reports">
+        View Reports
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <div class="sales-grid" *ngIf="salesSummary.length; else noSales">
+      <div class="sales-month" *ngFor="let month of salesSummary">
+        <span>{{ month.salesMonth | date: 'MMM yyyy' }}</span>
+        <strong>{{ month.totalSales | currency: 'INR' }}</strong>
+      </div>
+    </div>
+
+    <ng-template #noSales>
+      <p class="empty-text">No completed sales for the selected period.</p>
+    </ng-template>
+  </section>
+</section>

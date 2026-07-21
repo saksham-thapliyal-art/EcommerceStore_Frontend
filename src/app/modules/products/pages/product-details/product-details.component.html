@@ -1,0 +1,94 @@
+<section class="product-details-page">
+  <a mat-button routerLink="/products">
+    <mat-icon>arrow_back</mat-icon>
+    Back to Products
+  </a>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <article *ngIf="product as productDetails" class="details-grid">
+    <div class="gallery">
+      <img
+        class="main-image"
+        [src]="mainImageUrl(productDetails)"
+        [alt]="productDetails.name"
+      />
+
+      <div class="thumbs" *ngIf="productDetails.images.length > 1">
+        <button
+          type="button"
+          *ngFor="let image of productDetails.images"
+          [class.active]="selectedImage === imageUrl(image.imageUrl)"
+          (click)="selectedImage = imageUrl(image.imageUrl)"
+        >
+          <img [src]="imageUrl(image.imageUrl)" [alt]="productDetails.name" />
+        </button>
+      </div>
+    </div>
+
+    <div class="details">
+      <span class="category">{{ productDetails.categoryName }}</span>
+      <h1>{{ productDetails.name }}</h1>
+      <p class="description">
+        {{ productDetails.description || 'No description available.' }}
+      </p>
+
+      <strong class="price">{{ productDetails.price | currency: 'INR' }}</strong>
+
+      <span
+        class="stock"
+        [class.low-stock]="productDetails.stockQuantity <= 5"
+      >
+        {{ productDetails.stockQuantity }} in stock
+      </span>
+
+      <div class="quantity-controls">
+        <button
+          mat-icon-button
+          type="button"
+          aria-label="Decrease quantity"
+          [disabled]="quantity <= 1"
+          (click)="decreaseQuantity()"
+        >
+          <mat-icon>remove</mat-icon>
+        </button>
+        <span>{{ quantity }}</span>
+        <button
+          mat-icon-button
+          type="button"
+          aria-label="Increase quantity"
+          [disabled]="quantity >= productDetails.stockQuantity"
+          (click)="increaseQuantity()"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        [disabled]="productDetails.stockQuantity <= 0 || isAdding"
+        (click)="addToCart()"
+      >
+        <mat-icon>add_shopping_cart</mat-icon>
+        Add to Cart
+      </button>
+
+      <div class="delivery-panel">
+        <div>
+          <mat-icon>local_shipping</mat-icon>
+          <span>Free shipping</span>
+        </div>
+        <div>
+          <mat-icon>sync</mat-icon>
+          <span>Easy returns</span>
+        </div>
+        <div>
+          <mat-icon>verified_user</mat-icon>
+          <span>Secure checkout</span>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>

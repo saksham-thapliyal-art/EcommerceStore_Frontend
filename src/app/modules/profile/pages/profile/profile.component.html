@@ -1,0 +1,101 @@
+<section class="profile-page">
+  <header class="profile-header">
+    <div>
+      <span>Account</span>
+      <h1>My Profile</h1>
+      <p>Keep your delivery details current for faster checkout.</p>
+    </div>
+
+    <a mat-stroked-button color="primary" routerLink="/orders">
+      <mat-icon>receipt_long</mat-icon>
+      My Orders
+    </a>
+  </header>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div class="profile-grid" *ngIf="profile as profileDetails">
+    <aside class="profile-card">
+      <div class="avatar">
+        {{ profileDetails.fullName.charAt(0) || 'U' }}
+      </div>
+
+      <h2>{{ profileDetails.fullName }}</h2>
+      <p>{{ profileDetails.email }}</p>
+
+      <div class="profile-meta">
+        <div>
+          <mat-icon>calendar_month</mat-icon>
+          <span>Joined</span>
+          <strong>{{ profileDetails.createdAt | date: 'mediumDate' }}</strong>
+        </div>
+        <div>
+          <mat-icon>local_shipping</mat-icon>
+          <span>Default address</span>
+          <strong>{{ profileDetails.shippingAddress || 'Not added' }}</strong>
+        </div>
+      </div>
+    </aside>
+
+    <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <div class="form-heading">
+        <div>
+          <h2>Profile Details</h2>
+          <p>Email is read-only for account security.</p>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput [value]="profileDetails.email" readonly />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Full Name</mat-label>
+        <input matInput formControlName="fullName" />
+        <mat-error *ngIf="profileForm.get('fullName')?.hasError('required')">
+          Full name is required.
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('fullName')?.hasError('minlength')">
+          Full name must be at least 2 characters.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone Number</mat-label>
+        <input matInput formControlName="phoneNumber" />
+        <mat-error *ngIf="profileForm.get('phoneNumber')?.hasError('pattern')">
+          Enter a valid phone number.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Shipping Address</mat-label>
+        <textarea matInput rows="5" formControlName="shippingAddress"></textarea>
+        <mat-error *ngIf="profileForm.get('shippingAddress')?.hasError('minlength')">
+          Address must be at least 10 characters.
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('shippingAddress')?.hasError('maxlength')">
+          Address is too long.
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSaving">
+          <mat-icon>save</mat-icon>
+          Save Changes
+        </button>
+        <button mat-button type="button" (click)="loadProfile()" [disabled]="isSaving">
+          Reset
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="empty-profile" *ngIf="!isLoading && !profile">
+    <mat-icon>person_off</mat-icon>
+    <h2>Profile unavailable</h2>
+    <p>Sign in again to refresh your account details.</p>
+    <a mat-raised-button color="primary" routerLink="/auth/login">Go to Login</a>
+  </div>
+</section>
