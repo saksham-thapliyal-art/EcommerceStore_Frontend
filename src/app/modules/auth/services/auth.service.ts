@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay, finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,6 +22,8 @@ import { ApiResponse } from 'src/app/shared/models/api-response';
 })
 export class AuthService {
   private readonly appUrl = environment.apiUrl;
+  private refreshInProgress$: Observable<ApiResponse<LoginResponse>> | null =
+    null;
 
   constructor(
     private http: HttpClient,
@@ -46,6 +48,34 @@ export class AuthService {
     return this.http.post<ApiResponse<LoginResponse>>(
       `${this.appUrl}/Auth/Login`,
       request,
+      { withCredentials: true },
+    );
+  }
+
+  // Refresh access token using the HttpOnly refresh cookie
+  refreshToken(): Observable<ApiResponse<LoginResponse>> {
+    if (!this.refreshInProgress$) {
+      this.refreshInProgress$ = this.http
+        .post<
+          ApiResponse<LoginResponse>
+        >(`${this.appUrl}/Auth/RefreshToken`, {}, { withCredentials: true })
+        .pipe(
+          shareReplay(1),
+          finalize(() => {
+            this.refreshInProgress$ = null;
+          }),
+        );
+    }
+
+    return this.refreshInProgress$;
+  }
+
+  // Server-side logout: revokes the refresh token and clears the HttpOnly cookie
+  serverLogout(): Observable<ApiResponse<object>> {
+    return this.http.post<ApiResponse<object>>(
+      `${this.appUrl}/Auth/Logout`,
+      {},
+      { withCredentials: true },
     );
   }
 
@@ -106,22 +136,37 @@ export class AuthService {
   // Login Status
 
   isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  isAccessTokenExpired(): boolean {
     const user = this.getCurrentUser();
 
     if (!user) {
-      return false;
+      return true;
     }
 
-    return user.exp * 1000 > Date.now();
+    return user.exp * 1000 <= Date.now();
   }
 
   // Logout
 
   logout(): void {
+    this.serverLogout().subscribe({
+      error: () => {},
+    });
+
     localStorage.removeItem('token');
-
+    this.router.navigate(['/auth/login']);
     this.showMessage('Logout Successful.');
+  }
 
+  // Called by the interceptor when a refresh attempt fails — the server has
+  // already rejected the refresh token, so there's nothing left to revoke;
+  // just clean up locally with a message that reflects what happened.
+  forceLogout(): void {
+    localStorage.removeItem('token');
+    this.showMessage('Your session has expired. Please log in again.');
     this.router.navigate(['/auth/login']);
   }
 
